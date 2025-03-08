@@ -37,6 +37,26 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Speed Test Styles */
+#startTest, #restartTest {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+}
+
+.display-4 {
+    font-weight: 600;
+    font-size: 2.5rem;
+}
+
+.progress {
+    height: 1.2rem;
+    border-radius: 0.6rem;
+}
+
+#testStatus {
+    font-size: 1.1rem;
+}
+
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
     .sidebar {
@@ -75,6 +95,26 @@ body {
     .btn {
         padding: 0.5rem 1rem;
         margin: 0.25rem 0;
+    }
+    
+    /* Speed test mobile optimizations */
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    #testResults .row {
+        margin-left: -0.5rem;
+        margin-right: -0.5rem;
+    }
+    
+    #testResults .col-md-6 {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        margin-bottom: 1rem;
     }
 }
 

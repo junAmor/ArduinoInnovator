@@ -1,0 +1,83 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="text-center mb-4">
+        <h2 class="mb-3">Network Speed Test</h2>
+        <p class="lead">Test your internet connection speed</p>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <button id="startTest" class="btn btn-primary btn-lg">Start Test</button>
+            </div>
+            
+            <div id="testResults" class="d-none">
+                <div class="row g-4 text-center">
+                    <div class="col-md-6">
+                        <div class="card bg-dark">
+                            <div class="card-body">
+                                <h5 class="card-title">Download Speed</h5>
+                                <div class="display-4 mb-2" id="downloadSpeed">0.00</div>
+                                <p class="text-muted">Mbps</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-dark">
+                            <div class="card-body">
+                                <h5 class="card-title">Upload Speed</h5>
+                                <div class="display-4 mb-2" id="uploadSpeed">0.00</div>
+                                <p class="text-muted">Mbps</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-dark">
+                            <div class="card-body">
+                                <h5 class="card-title">Ping</h5>
+                                <div class="display-4 mb-2" id="pingResult">0</div>
+                                <p class="text-muted">ms</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-dark">
+                            <div class="card-body">
+                                <h5 class="card-title">Jitter</h5>
+                                <div class="display-4 mb-2" id="jitterResult">0</div>
+                                <p class="text-muted">ms</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress mt-4">
+                    <div id="testProgress" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <div id="testStatus" class="mb-3">Ready to test</div>
+                    <button id="restartTest" class="btn btn-outline-primary d-none">Test Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">About This Speed Test</h5>
+            <p>This speed test measures your network performance by:</p>
+            <ul>
+                <li>Download speed: How quickly data can be retrieved from the internet</li>
+                <li>Upload speed: How quickly you can send data to the internet</li>
+                <li>Ping: The reaction time of your connection (lower is better)</li>
+                <li>Jitter: The consistency of your connection (lower is better)</li>
+            </ul>
+            <p class="mb-0"><small class="text-muted">For accurate results, close other applications that might be using your network.</small></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
