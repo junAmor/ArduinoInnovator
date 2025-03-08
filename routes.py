@@ -18,6 +18,8 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
+        if current_user.role == 'evaluator':
+            return redirect(url_for('select_participant'))
         return redirect(url_for('leaderboard'))
 
     if request.method == 'POST':
@@ -32,6 +34,8 @@ def login():
 
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
+            if user.role == 'evaluator':
+                return redirect(url_for('select_participant'))
             return redirect(url_for('leaderboard'))
         flash('Invalid username or password', 'danger')
 
