@@ -48,8 +48,15 @@ def evaluators():
     if current_user.role != 'admin':
         flash('Access denied', 'danger')
         return redirect(url_for('leaderboard'))
+
+    # Create a dictionary of default passwords for initial evaluators
+    default_passwords = {
+        'Jerome': 'jerome123',
+        'Glen': 'glen123'
+    }
+
     evaluators = User.query.filter_by(role='evaluator').all()
-    return render_template('evaluators.html', evaluators=evaluators)
+    return render_template('evaluators.html', evaluators=evaluators, default_passwords=default_passwords)
 
 @app.route('/evaluators/add', methods=['POST'])
 @login_required
