@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">Evaluate: {{ participant.name }}</h2>
+    <p class="lead mb-4">Project: {{ participant.project_title }}</p>
+
+    <form method="POST" class="needs-validation" novalidate>
+        <div class="card mb-4">
+            <div class="card-body">
+                <!-- Project Design - 25% -->
+                <div class="mb-4">
+                    <label class="form-label d-flex justify-content-between">
+                        <span>Project Design (25%)</span>
+                        <span class="rating-value" id="project_design_value">5</span>
+                    </label>
+                    <input type="range" class="form-range" name="project_design" 
+                           min="0" max="10" step="0.1" value="5" 
+                           oninput="this.nextElementSibling.value = this.value">
+                    <div class="d-flex justify-content-between text-muted">
+                        <small>0</small>
+                        <small>10</small>
+                    </div>
+                </div>
+
+                <!-- Functionality - 30% -->
+                <div class="mb-4">
+                    <label class="form-label d-flex justify-content-between">
+                        <span>Functionality (30%)</span>
+                        <span class="rating-value" id="functionality_value">5</span>
+                    </label>
+                    <input type="range" class="form-range" name="functionality" 
+                           min="0" max="10" step="0.1" value="5"
+                           oninput="this.nextElementSibling.value = this.value">
+                    <div class="d-flex justify-content-between text-muted">
+                        <small>0</small>
+                        <small>10</small>
+                    </div>
+                </div>
+
+                <!-- Presentation - 15% -->
+                <div class="mb-4">
+                    <label class="form-label d-flex justify-content-between">
+                        <span>Presentation (15%)</span>
+                        <span class="rating-value" id="presentation_value">5</span>
+                    </label>
+                    <input type="range" class="form-range" name="presentation" 
+                           min="0" max="10" step="0.1" value="5"
+                           oninput="this.nextElementSibling.value = this.value">
+                    <div class="d-flex justify-content-between text-muted">
+                        <small>0</small>
+                        <small>10</small>
+                    </div>
+                </div>
+
+                <!-- Web Design - 10% -->
+                <div class="mb-4">
+                    <label class="form-label d-flex justify-content-between">
+                        <span>Web Design (10%)</span>
+                        <span class="rating-value" id="web_design_value">5</span>
+                    </label>
+                    <input type="range" class="form-range" name="web_design" 
+                           min="0" max="10" step="0.1" value="5"
+                           oninput="this.nextElementSibling.value = this.value">
+                    <div class="d-flex justify-content-between text-muted">
+                        <small>0</small>
+                        <small>10</small>
+                    </div>
+                </div>
+
+                <!-- Impact - 20% -->
+                <div class="mb-4">
+                    <label class="form-label d-flex justify-content-between">
+                        <span>Impact (20%)</span>
+                        <span class="rating-value" id="impact_value">5</span>
+                    </label>
+                    <input type="range" class="form-range" name="impact" 
+                           min="0" max="10" step="0.1" value="5"
+                           oninput="this.nextElementSibling.value = this.value">
+                    <div class="d-flex justify-content-between text-muted">
+                        <small>0</small>
+                        <small>10</small>
+                    </div>
+                </div>
+
+                <!-- Comments -->
+                <div class="mb-4">
+                    <label for="comments" class="form-label">Additional Comments</label>
+                    <textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a href="{{ url_for('select_participant') }}" class="btn btn-secondary">Back</a>
+            <button type="submit" class="btn btn-primary">Submit Evaluation</button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.querySelectorAll('input[type="range"]').forEach(input => {
+    input.addEventListener('input', function() {
+        const valueId = this.name + '_value';
+        document.getElementById(valueId).textContent = this.value;
+    });
+});
+</script>
+{% endblock %}

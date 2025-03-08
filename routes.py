@@ -3,6 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import app, db
 from models import User, Participant, Evaluation
+from sqlalchemy import and_
 
 # Dictionary to store all evaluator passwords, including new ones
 evaluator_passwords = {
@@ -166,3 +167,73 @@ def delete_participant(participant_id):
     db.session.commit()
     flash('Group removed successfully', 'success')
     return redirect(url_for('participants'))
+
+@app.route('/select_participant')
+@login_required
+def select_participant():
+    if current_user.role != 'evaluator':
+        flash('Access denied', 'danger')
+        return redirect(url_for('leaderboard'))
+
+    # Get participants that haven't been rated by current evaluator
+    rated_participants = db.session.query(Evaluation.participant_id).filter_by(evaluator_id=current_user.id)
+    unrated_participants = Participant.query.filter(~Participant.id.in_(rated_participants)).all()
+
+    return render_template('select_participant.html', unrated_participants=unrated_participants)
+
+@app.route('/rate_participant/<int:participant_id>', methods=['GET', 'POST'])
+@login_required
+def rate_participant(participant_id):
+    if current_user.role != 'evaluator':
+        flash('Access denied', 'danger')
+        return redirect(url_for('leaderboard'))
+
+    participant = Participant.query.get_or_404(participant_id)
+
+    # Check if already rated
+    if Evaluation.query.filter_by(
+        evaluator_id=current_user.id,
+        participant_id=participant_id
+    ).first():
+        flash('You have already evaluated this participant', 'warning')
+        return redirect(url_for('select_participant'))
+
+    if request.method == 'POST':
+        try:
+            evaluation = Evaluation(
+                participant_id=participant_id,
+                evaluator_id=current_user.id,
+                project_design=float(request.form['project_design']),
+                functionality=float(request.form['functionality']),
+                presentation=float(request.form['presentation']),
+                web_design=float(request.form['web_design']),
+                impact=float(request.form['impact']),
+                comments=request.form.get('comments', '')
+            )
+
+            db.session.add(evaluation)
+
+            # Update participant's average score
+            participant_evaluations = Evaluation.query.filter_by(participant_id=participant_id).all()
+            total_score = sum(eval.total_score for eval in participant_evaluations + [evaluation])
+            participant.score = total_score / (len(participant_evaluations) + 1)
+
+            db.session.commit()
+            flash('Evaluation submitted successfully', 'success')
+
+            # Check if there are more participants to evaluate
+            if Participant.query.filter(
+                ~Participant.id.in_(
+                    db.session.query(Evaluation.participant_id)
+                    .filter_by(evaluator_id=current_user.id)
+                )
+            ).first():
+                return redirect(url_for('select_participant'))
+            else:
+                return render_template('evaluation_complete.html')
+
+        except (ValueError, KeyError):
+            flash('Invalid evaluation data submitted', 'danger')
+            return render_template('rate_participant.html', participant=participant)
+
+    return render_template('rate_participant.html', participant=participant)
