@@ -37,14 +37,55 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Mobile Responsive Styles */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
         height: auto;
         position: relative;
+        min-height: auto;
+        margin-bottom: 1rem;
     }
 
     .content {
         margin-left: 0;
+        padding: 1rem !important;
     }
+
+    .table-responsive {
+        margin-bottom: 1rem;
+    }
+
+    /* Improve form layouts on mobile */
+    .form-range {
+        width: 100%;
+    }
+
+    /* Better spacing for rating sections */
+    .rating-section {
+        padding: 1rem;
+    }
+
+    /* Improve modal sizing on mobile */
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    /* Make buttons more touch-friendly */
+    .btn {
+        padding: 0.5rem 1rem;
+        margin: 0.25rem 0;
+    }
+}
+
+/* Table improvements */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Rating form improvements */
+.rating-value {
+    min-width: 2.5rem;
+    text-align: right;
 }
