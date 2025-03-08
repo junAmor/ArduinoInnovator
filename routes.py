@@ -122,3 +122,47 @@ def delete_evaluator(evaluator_id):
 def participants():
     participants = Participant.query.all()
     return render_template('participants.html', participants=participants)
+
+@app.route('/participants/add', methods=['POST'])
+@login_required
+def add_participant():
+    if current_user.role != 'admin':
+        flash('Access denied', 'danger')
+        return redirect(url_for('participants'))
+
+    name = request.form.get('name')
+    project_title = request.form.get('project_title')
+
+    if not name or not project_title:
+        flash('Please provide both group name and project title', 'danger')
+        return redirect(url_for('participants'))
+
+    new_participant = Participant(
+        name=name,
+        project_title=project_title
+    )
+    db.session.add(new_participant)
+    db.session.commit()
+
+    flash('Group added successfully', 'success')
+    return redirect(url_for('participants'))
+
+@app.route('/participants/delete/<int:participant_id>', methods=['POST'])
+@login_required
+def delete_participant(participant_id):
+    if current_user.role != 'admin':
+        flash('Access denied', 'danger')
+        return redirect(url_for('participants'))
+
+    participant = Participant.query.get_or_404(participant_id)
+
+    # Check if participant has any evaluations
+    evaluations = Evaluation.query.filter_by(participant_id=participant_id).all()
+    if evaluations:
+        flash('Cannot delete group with existing evaluations', 'danger')
+        return redirect(url_for('participants'))
+
+    db.session.delete(participant)
+    db.session.commit()
+    flash('Group removed successfully', 'success')
+    return redirect(url_for('participants'))
