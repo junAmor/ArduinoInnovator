@@ -4,22 +4,30 @@ from werkzeug.security import check_password_hash
 from app import app, db
 from models import User, Participant, Evaluation
 
-@app.route('/')
+@app.route('/', methods=['GET'])
+def index():
+    return redirect(url_for('login'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('leaderboard'))
-    
+
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
+
+        if not username or not password:
+            flash('Please provide both username and password', 'danger')
+            return render_template('login.html')
+
         user = User.query.filter_by(username=username).first()
-        
+
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
             return redirect(url_for('leaderboard'))
         flash('Invalid username or password', 'danger')
-    
+
     return render_template('login.html')
 
 @app.route('/logout')
