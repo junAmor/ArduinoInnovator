@@ -4,6 +4,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from app import app, db
 from models import User, Participant, Evaluation
 
+# Dictionary to store all evaluator passwords, including new ones
+evaluator_passwords = {
+    'Jerome': 'jerome123',
+    'Glen': 'glen123'
+}
+
 @app.route('/', methods=['GET'])
 def index():
     return redirect(url_for('login'))
@@ -49,14 +55,8 @@ def evaluators():
         flash('Access denied', 'danger')
         return redirect(url_for('leaderboard'))
 
-    # Create a dictionary of default passwords for initial evaluators
-    default_passwords = {
-        'Jerome': 'jerome123',
-        'Glen': 'glen123'
-    }
-
     evaluators = User.query.filter_by(role='evaluator').all()
-    return render_template('evaluators.html', evaluators=evaluators, default_passwords=default_passwords)
+    return render_template('evaluators.html', evaluators=evaluators, default_passwords=evaluator_passwords)
 
 @app.route('/evaluators/add', methods=['POST'])
 @login_required
@@ -75,6 +75,9 @@ def add_evaluator():
     if User.query.filter_by(username=username).first():
         flash('Username already exists', 'danger')
         return redirect(url_for('evaluators'))
+
+    # Store the password in our dictionary before hashing
+    evaluator_passwords[username] = password
 
     new_evaluator = User(
         username=username,
@@ -104,6 +107,10 @@ def delete_evaluator(evaluator_id):
     if evaluations:
         flash('Cannot delete evaluator with existing evaluations', 'danger')
         return redirect(url_for('evaluators'))
+
+    # Remove the password from our dictionary
+    if evaluator.username in evaluator_passwords:
+        del evaluator_passwords[evaluator.username]
 
     db.session.delete(evaluator)
     db.session.commit()
