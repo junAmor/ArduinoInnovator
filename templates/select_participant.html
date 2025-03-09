@@ -1,30 +1,38 @@
+
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container py-4">
-    <h2 class="mb-4">Select Participant to Evaluate</h2>
-    
-    {% if unrated_participants %}
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-        {% for participant in unrated_participants %}
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Group {{ loop.index }}: {{ participant.name }}</h5>
-                    <p class="card-text">{{ participant.project_title }}</p>
+<h2 class="mb-4">Groups to Evaluate</h2>
+
+<div class="row row-cols-1 row-cols-md-2 g-4">
+    {% for participant in all_participants %}
+    <div class="col">
+        <div class="card h-100 {% if participant.id in evaluated_participant_ids %}border-success{% endif %}">
+            <div class="card-body">
+                <h5 class="card-title">Group {{ loop.index }}: {{ participant.name }}</h5>
+                <p class="card-text">{{ participant.project_title }}</p>
+                {% if participant.id in evaluated_participant_ids %}
+                    <button class="btn btn-success" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill me-1" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                        </svg>
+                        Evaluated
+                    </button>
+                {% else %}
                     <a href="{{ url_for('rate_participant', participant_id=participant.id) }}" 
                        class="btn btn-primary">Start Evaluation</a>
-                </div>
+                {% endif %}
             </div>
         </div>
-        {% endfor %}
     </div>
-    {% else %}
-    <div class="text-center py-5">
-        <h3>Thank you for completing all evaluations!</h3>
-        <p class="lead">Your dedication to evaluating all participants is greatly appreciated.</p>
-        <a href="{{ url_for('leaderboard') }}" class="btn btn-primary mt-3">View Leaderboard</a>
-    </div>
-    {% endif %}
+    {% endfor %}
 </div>
+
+{% if all_participants|length == evaluated_participant_ids|length and all_participants|length > 0 %}
+<div class="alert alert-success mt-4">
+    <h4 class="alert-heading">All evaluations completed!</h4>
+    <p>Thank you for evaluating all the groups.</p>
+    <a href="{{ url_for('leaderboard') }}" class="btn btn-primary mt-2">View Leaderboard</a>
+</div>
+{% endif %}
 {% endblock %}

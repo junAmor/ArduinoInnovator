@@ -197,11 +197,22 @@ def select_participant():
         flash('Access denied', 'danger')
         return redirect(url_for('leaderboard'))
 
-    # Get participants that haven't been rated by current evaluator
-    rated_participants = db.session.query(Evaluation.participant_id).filter_by(evaluator_id=current_user.id)
-    unrated_participants = Participant.query.filter(~Participant.id.in_(rated_participants)).all()
+    # Get all participants
+    all_participants = Participant.query.all()
+    
+    # Get IDs of participants that have been evaluated by current evaluator
+    evaluated_participant_ids = [
+        result[0] for result in 
+        db.session.query(Evaluation.participant_id)
+        .filter_by(evaluator_id=current_user.id)
+        .all()
+    ]
 
-    return render_template('select_participant.html', unrated_participants=unrated_participants)
+    return render_template(
+        'select_participant.html', 
+        all_participants=all_participants,
+        evaluated_participant_ids=evaluated_participant_ids
+    )
 
 @app.route('/rate_participant/<int:participant_id>', methods=['GET', 'POST'])
 @login_required
