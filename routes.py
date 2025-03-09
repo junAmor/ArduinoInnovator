@@ -77,6 +77,7 @@ def leaderboard():
                 participant.avg_impact = sum(e.impact for e in evaluations) / len(evaluations)
                 
                 # Calculate weighted final score using the provided formula
+                # For the new 0-100 scale
                 weighted_scores = []
                 for evaluation in evaluations:
                     weighted_score = (
