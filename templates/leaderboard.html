@@ -1,7 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2 class="mb-4">Leaderboard</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Leaderboard</h2>
+    {% if current_user.role == 'admin' %}
+    <form action="{{ url_for('reset_all_data') }}" method="POST" class="d-inline">
+        <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to reset ALL data? This will delete all participants, evaluations, and scores. This action cannot be undone.')">
+            Reset All Data
+        </button>
+    </form>
+    {% endif %}
+</div>
 
 {% if not all_evaluations_complete %}
 <div class="alert alert-info">

@@ -273,6 +273,26 @@ def reset_evaluations():
     flash('All your evaluations have been reset. You can start evaluating again.', 'success')
     return redirect(url_for('select_participant'))
 
+@app.route('/reset_all_data', methods=['POST'])
+@login_required
+def reset_all_data():
+    if current_user.role != 'admin':
+        flash('Access denied', 'danger')
+        return redirect(url_for('leaderboard'))
+    
+    # Delete all evaluations first to avoid foreign key constraints
+    Evaluation.query.delete()
+    
+    # Reset scores for all participants
+    for participant in Participant.query.all():
+        participant.score = 0.0
+    
+    # Commit the changes
+    db.session.commit()
+    
+    flash('All data has been reset. Evaluations deleted and scores reset to zero.', 'success')
+    return redirect(url_for('leaderboard'))
+
 @app.route('/select_participant')
 @login_required
 def select_participant():
