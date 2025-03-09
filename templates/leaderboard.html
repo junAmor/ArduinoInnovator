@@ -2,6 +2,20 @@
 
 {% block content %}
 <h2 class="mb-4">Leaderboard</h2>
+<div class="card mb-4">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0">Criteria Weights</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col"><strong>Project Design:</strong> 25%</div>
+            <div class="col"><strong>Functionality:</strong> 30%</div>
+            <div class="col"><strong>Presentation:</strong> 15%</div>
+            <div class="col"><strong>Web Design:</strong> 10%</div>
+            <div class="col"><strong>Impact:</strong> 20%</div>
+        </div>
+    </div>
+</div>
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
@@ -9,18 +23,30 @@
                 <thead>
                     <tr>
                         <th>Rank</th>
+                        <th>Group</th>
                         <th>Participant</th>
                         <th>Project Title</th>
-                        <th>Score</th>
+                        <th>Project Design (25%)</th>
+                        <th>Functionality (30%)</th>
+                        <th>Presentation (15%)</th>
+                        <th>Web Design (10%)</th>
+                        <th>Impact (20%)</th>
+                        <th>Total Score</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for participant in participants %}
                     <tr>
                         <td>{{ loop.index }}</td>
+                        <td>{{ participant.group_number }}</td>
                         <td>{{ participant.name }}</td>
                         <td>{{ participant.project_title }}</td>
-                        <td>{{ "%.2f"|format(participant.score) }}</td>
+                        <td>{{ "%.2f"|format(participant.avg_project_design) }}</td>
+                        <td>{{ "%.2f"|format(participant.avg_functionality) }}</td>
+                        <td>{{ "%.2f"|format(participant.avg_presentation) }}</td>
+                        <td>{{ "%.2f"|format(participant.avg_web_design) }}</td>
+                        <td>{{ "%.2f"|format(participant.avg_impact) }}</td>
+                        <td class="fw-bold">{{ "%.2f"|format(participant.score) }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

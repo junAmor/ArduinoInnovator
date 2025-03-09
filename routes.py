@@ -51,6 +51,24 @@ def logout():
 @login_required
 def leaderboard():
     participants = Participant.query.order_by(Participant.score.desc()).all()
+    
+    # Calculate average scores for each criterion
+    for participant in participants:
+        evaluations = Evaluation.query.filter_by(participant_id=participant.id).all()
+        
+        if evaluations:
+            participant.avg_project_design = sum(e.project_design for e in evaluations) / len(evaluations)
+            participant.avg_functionality = sum(e.functionality for e in evaluations) / len(evaluations)
+            participant.avg_presentation = sum(e.presentation for e in evaluations) / len(evaluations)
+            participant.avg_web_design = sum(e.web_design for e in evaluations) / len(evaluations)
+            participant.avg_impact = sum(e.impact for e in evaluations) / len(evaluations)
+        else:
+            participant.avg_project_design = 0
+            participant.avg_functionality = 0
+            participant.avg_presentation = 0
+            participant.avg_web_design = 0
+            participant.avg_impact = 0
+    
     return render_template('leaderboard.html', participants=participants)
 
 @app.route('/evaluators')
