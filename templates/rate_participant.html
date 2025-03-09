@@ -28,11 +28,11 @@
         <div class="card-body">
           <div class="form-group">
             <div class="form-text mb-2">Please input the score from 1 to 100:</div>
-            <input type="number" id="project_design" name="project_design" class="form-control" min="1" max="100" required>
+            <input type="number" id="project_design" name="project_design" class="form-control text-dark" min="1" max="100" required>
           </div>
         </div>
       </div>
-      
+
       <div class="card mb-3 shadow-sm">
         <div class="card-header bg-light">
           <h5 class="mb-0">Functionality (30%)</h5>
@@ -40,11 +40,11 @@
         <div class="card-body">
           <div class="form-group">
             <div class="form-text mb-2">Please input the score from 1 to 100:</div>
-            <input type="number" id="functionality" name="functionality" class="form-control" min="1" max="100" required>
+            <input type="number" id="functionality" name="functionality" class="form-control text-dark" min="1" max="100" required>
           </div>
         </div>
       </div>
-      
+
       <div class="card mb-3 shadow-sm">
         <div class="card-header bg-light">
           <h5 class="mb-0">Presentation (15%)</h5>
@@ -52,12 +52,12 @@
         <div class="card-body">
           <div class="form-group">
             <div class="form-text mb-2">Please input the score from 1 to 100:</div>
-            <input type="number" id="presentation" name="presentation" class="form-control" min="1" max="100" required>
+            <input type="number" id="presentation" name="presentation" class="form-control text-dark" min="1" max="100" required>
           </div>
         </div>
       </div>
     </div>
-    
+
     <div class="col-md-6">
       <div class="card mb-3 shadow-sm">
         <div class="card-header bg-light">
@@ -66,11 +66,11 @@
         <div class="card-body">
           <div class="form-group">
             <div class="form-text mb-2">Please input the score from 1 to 100:</div>
-            <input type="number" id="web_design" name="web_design" class="form-control" min="1" max="100" required>
+            <input type="number" id="web_design" name="web_design" class="form-control text-dark" min="1" max="100" required>
           </div>
         </div>
       </div>
-      
+
       <div class="card mb-3 shadow-sm">
         <div class="card-header bg-light">
           <h5 class="mb-0">Impact (20%)</h5>
@@ -78,13 +78,13 @@
         <div class="card-body">
           <div class="form-group">
             <div class="form-text mb-2">Please input the score from 1 to 100:</div>
-            <input type="number" id="impact" name="impact" class="form-control" min="1" max="100" required>
+            <input type="number" id="impact" name="impact" class="form-control text-dark" min="1" max="100" required>
           </div>
         </div>
       </div>
     </div>
   </div>
-  
+
   <div class="card mb-4 shadow-sm">
     <div class="card-header bg-light">
       <h5 class="mb-0 text-primary">
@@ -92,10 +92,13 @@
       </h5>
     </div>
     <div class="card-body">
-      <div class="form-group">
-        <textarea id="comments" name="comments" class="form-control" rows="4" 
-          placeholder="Enter additional feedback and observations about this project..."></textarea>
-      </div>
+      <div class="form-group mb-4 p-3 border rounded shadow-sm bg-light">
+            <label for="comments" class="fw-bold text-primary">
+              <i class="bi bi-chat-square-text me-1"></i> Comments (Optional)
+            </label>
+            <textarea id="comments" name="comments" class="form-control mt-2 text-dark" rows="4" 
+              placeholder="Enter additional feedback and observations about this project..."></textarea>
+          </div>
     </div>
   </div>
 
