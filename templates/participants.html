@@ -3,9 +3,14 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Participants</h2>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addParticipantModal">
-        Add Group
-    </button>
+    <div>
+        <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#resetParticipantsModal">
+            Reset All Participants
+        </button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addParticipantModal">
+            Add Group
+        </button>
+    </div>
 </div>
 
 <div class="card">
@@ -51,6 +56,28 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- Reset Participants Modal -->
+<div class="modal fade" id="resetParticipantsModal" tabindex="-1" aria-labelledby="resetParticipantsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resetParticipantsModalLabel">Reset All Participants</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-danger">Warning: This will delete all participants and their evaluations. This action cannot be undone.</p>
+                <p>Are you sure you want to reset all participants?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('reset_participants') }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Reset All Participants</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

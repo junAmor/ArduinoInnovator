@@ -171,6 +171,25 @@ def delete_participant(participant_id):
     flash('Group removed successfully', 'success')
     return redirect(url_for('participants'))
 
+@app.route('/participants/reset', methods=['POST'])
+@login_required
+def reset_participants():
+    if current_user.role != 'admin':
+        flash('Access denied', 'danger')
+        return redirect(url_for('participants'))
+    
+    # Delete all evaluations first to avoid foreign key constraints
+    Evaluation.query.delete()
+    
+    # Delete all participants
+    Participant.query.delete()
+    
+    # Commit the changes
+    db.session.commit()
+    
+    flash('All participants and evaluations have been reset', 'success')
+    return redirect(url_for('participants'))
+
 @app.route('/select_participant')
 @login_required
 def select_participant():
