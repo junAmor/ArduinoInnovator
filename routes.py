@@ -1,6 +1,4 @@
-import time
-import os
-from flask import render_template, redirect, url_for, flash, request, make_response
+from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import app, db
@@ -244,34 +242,4 @@ def rate_participant(participant_id):
     return render_template('rate_participant.html', participant=participant)
 
 
-@app.route('/speed-test')
-def speed_test():
-    # Allow access to speed test even if not logged in
-    return render_template('speed_test.html')
-
-@app.route('/ping-test')
-def ping_test():
-    # Simple endpoint to measure ping
-    return {'status': 'ok', 'timestamp': time.time()}
-
-@app.route('/generate-test-file')
-def generate_test_file():
-    # Generate a file of specified size for download speed testing
-    size = request.args.get('size', default=1024*1024, type=int)  # Default 1MB
-
-    # Cap the size for security (50MB max)
-    size = min(size, 50 * 1024 * 1024)
-
-    response = make_response(os.urandom(size))
-    response.headers.set('Content-Type', 'application/octet-stream')
-    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate')
-    response.headers.set('Pragma', 'no-cache')
-    response.headers.set('Expires', '0')
-
-    return response
-
-@app.route('/upload-test', methods=['POST'])
-def upload_test():
-    # Endpoint to test upload speeds
-    # We just need to receive the data, no need to save it
-    return {'status': 'ok', 'received_bytes': request.content_length}
+# Speed test routes removed
