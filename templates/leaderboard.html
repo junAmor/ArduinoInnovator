@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block content %}
@@ -5,7 +6,7 @@
     <h2>Leaderboard</h2>
     {% if current_user.role == 'admin' %}
     <form action="{{ url_for('reset_all_data') }}" method="POST" class="d-inline">
-        <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to reset ALL data? This will delete all participants, evaluations, and scores. This action cannot be undone.')">
+        <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to reset ALL data? This will delete all evaluations and reset scores to zero. This action cannot be undone.')">
             Reset All Data
         </button>
     </form>
@@ -38,48 +39,40 @@
         </div>
     </div>
 </div>
-{% endif %}
 
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        {% if all_evaluations_complete %}<th>Rank</th>{% endif %}
-                        <th>Group</th>
-                        <th>Participant</th>
-                        <th>Project Title</th>
-                        {% if all_evaluations_complete %}
-                        <th>Project Design (25%)</th>
-                        <th>Functionality (30%)</th>
-                        <th>Presentation (15%)</th>
-                        <th>Web Design (10%)</th>
-                        <th>Impact (20%)</th>
-                        <th>Final Score</th>
-                        {% endif %}
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for participant in participants %}
-                    <tr {% if all_evaluations_complete and loop.index == 1 %}class="table-success"{% endif %}>
-                        {% if all_evaluations_complete %}<td class="fw-bold">{{ loop.index }}</td>{% endif %}
-                        <td>{{ participant.group_number }}</td>
-                        <td>{{ participant.name }}</td>
-                        <td>{{ participant.project_title }}</td>
-                        {% if all_evaluations_complete %}
-                        <td>{{ "%.2f"|format(participant.avg_project_design) }}</td>
-                        <td>{{ "%.2f"|format(participant.avg_functionality) }}</td>
-                        <td>{{ "%.2f"|format(participant.avg_presentation) }}</td>
-                        <td>{{ "%.2f"|format(participant.avg_web_design) }}</td>
-                        <td>{{ "%.2f"|format(participant.avg_impact) }}</td>
-                        <td class="fw-bold">{{ "%.2f"|format(participant.score) }}</td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Rank</th>
+                <th>Group No.</th>
+                <th>Group Name</th>
+                <th>Project Title</th>
+                <th>Final Score</th>
+                <th>Project Design</th>
+                <th>Functionality</th>
+                <th>Presentation</th>
+                <th>Web Design</th>
+                <th>Impact</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in participants %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ participant.group_number }}</td>
+                <td>{{ participant.name }}</td>
+                <td>{{ participant.project_title }}</td>
+                <td><strong>{{ "%.2f"|format(participant.score) }}</strong></td>
+                <td>{{ "%.2f"|format(participant.avg_project_design) }}</td>
+                <td>{{ "%.2f"|format(participant.avg_functionality) }}</td>
+                <td>{{ "%.2f"|format(participant.avg_presentation) }}</td>
+                <td>{{ "%.2f"|format(participant.avg_web_design) }}</td>
+                <td>{{ "%.2f"|format(participant.avg_impact) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
+{% endif %}
 {% endblock %}

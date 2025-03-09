@@ -23,6 +23,26 @@ class Evaluation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     participant_id = db.Column(db.Integer, db.ForeignKey('participant.id'), nullable=False)
     evaluator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    project_design = db.Column(db.Float, nullable=False)
+    functionality = db.Column(db.Float, nullable=False)
+    presentation = db.Column(db.Float, nullable=False)
+    web_design = db.Column(db.Float, nullable=False)
+    impact = db.Column(db.Float, nullable=False)
+    comments = db.Column(db.Text, nullable=True)
+    
+    @property
+    def total_score(self):
+        # Weighted score calculation
+        return (self.project_design * 0.25 +
+                self.functionality * 0.30 +
+                self.presentation * 0.15 +
+                self.web_design * 0.10 +
+                self.impact * 0.20)
+
+class Evaluation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    participant_id = db.Column(db.Integer, db.ForeignKey('participant.id'), nullable=False)
+    evaluator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     project_design = db.Column(db.Float, nullable=False)  # 25%
     functionality = db.Column(db.Float, nullable=False)   # 30%
     presentation = db.Column(db.Float, nullable=False)    # 15%
