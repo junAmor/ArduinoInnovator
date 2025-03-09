@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,43 +13,43 @@
             --yellow: #e0bd2f;
             --light-teal: #ccdede;
         }
-        
+
         body {
             background-color: var(--light-teal);
             color: #333;
         }
-        
+
         .navbar {
             background-color: var(--teal-dark) !important;
         }
-        
+
         .btn-primary {
             background-color: var(--teal-medium);
             border-color: var(--teal-medium);
         }
-        
+
         .btn-primary:hover {
             background-color: var(--teal-dark);
             border-color: var(--teal-dark);
         }
-        
+
         .btn-warning {
             background-color: var(--orange);
             border-color: var(--orange);
             color: white;
         }
-        
+
         .btn-success {
             background-color: var(--yellow);
             border-color: var(--yellow);
             color: #333;
         }
-        
+
         .card-header {
             background-color: var(--teal-medium);
             color: white;
         }
-        
+
         .table th {
             background-color: var(--teal-medium);
             color: white;
@@ -78,9 +77,6 @@
                                 <a class="nav-link" href="{{ url_for('evaluators') }}">Evaluators</a>
                             </li>
                         {% elif current_user.role == 'evaluator' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('leaderboard') }}">Leaderboard</a>
-                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('select_participant') }}">Evaluate</a>
                             </li>

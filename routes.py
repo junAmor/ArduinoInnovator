@@ -115,7 +115,26 @@ def evaluators():
         return redirect(url_for('leaderboard'))
 
     evaluators = User.query.filter_by(role='evaluator').all()
-    return render_template('evaluators.html', evaluators=evaluators, default_passwords=evaluator_passwords)
+    
+    # Get all evaluations for each evaluator
+    evaluator_evaluations = {}
+    for evaluator in evaluators:
+        evaluations = Evaluation.query.filter_by(evaluator_id=evaluator.id).all()
+        evaluator_evaluations[evaluator.id] = []
+        
+        for evaluation in evaluations:
+            participant = Participant.query.get(evaluation.participant_id)
+            evaluator_evaluations[evaluator.id].append({
+                'evaluation': evaluation,
+                'participant': participant
+            })
+    
+    return render_template(
+        'evaluators.html', 
+        evaluators=evaluators, 
+        default_passwords=evaluator_passwords,
+        evaluator_evaluations=evaluator_evaluations
+    )
 
 @app.route('/evaluators/add', methods=['POST'])
 @login_required
@@ -303,18 +322,19 @@ def select_participant():
     # Get all participants
     all_participants = Participant.query.all()
     
-    # Get IDs of participants that have been evaluated by current evaluator
-    evaluated_participant_ids = [
-        result[0] for result in 
-        db.session.query(Evaluation.participant_id)
-        .filter_by(evaluator_id=current_user.id)
-        .all()
-    ]
+    # Get IDs and evaluations of participants that have been evaluated by current evaluator
+    evaluations = Evaluation.query.filter_by(evaluator_id=current_user.id).all()
+    evaluated_participant_ids = [eval.participant_id for eval in evaluations]
+    
+    # Create a dictionary to store evaluation IDs for each participant
+    evaluation_ids = {eval.participant_id: eval.id for eval in evaluations}
 
     return render_template(
         'select_participant.html', 
         all_participants=all_participants,
-        evaluated_participant_ids=evaluated_participant_ids
+        evaluated_participant_ids=evaluated_participant_ids,
+        evaluation_ids=evaluation_ids,
+        show_leaderboard=False
     )
 
 @app.route('/rate_participant/<int:participant_id>', methods=['GET', 'POST'])
@@ -327,11 +347,13 @@ def rate_participant(participant_id):
     participant = Participant.query.get_or_404(participant_id)
 
     # Check if already rated
-    if Evaluation.query.filter_by(
+    existing_evaluation = Evaluation.query.filter_by(
         evaluator_id=current_user.id,
         participant_id=participant_id
-    ).first():
-        flash('You have already evaluated this participant', 'warning')
+    ).first()
+    
+    if existing_evaluation:
+        flash('You have already evaluated this participant. Please use the edit option.', 'warning')
         return redirect(url_for('select_participant'))
 
     if request.method == 'POST':
@@ -360,31 +382,65 @@ def rate_participant(participant_id):
             )
 
             db.session.add(evaluation)
-
-            # Update participant's average score
-            participant_evaluations = Evaluation.query.filter_by(participant_id=participant_id).all()
-            total_score = sum(eval.total_score for eval in participant_evaluations + [evaluation])
-            participant.score = total_score / (len(participant_evaluations) + 1)
-
             db.session.commit()
             flash('Evaluation submitted successfully', 'success')
 
-            # Check if there are more participants to evaluate
-            if Participant.query.filter(
-                ~Participant.id.in_(
-                    db.session.query(Evaluation.participant_id)
-                    .filter_by(evaluator_id=current_user.id)
-                )
-            ).first():
-                return redirect(url_for('select_participant'))
-            else:
-                return render_template('evaluation_complete.html')
+            return redirect(url_for('select_participant'))
 
         except (ValueError, KeyError):
             flash('Invalid evaluation data submitted', 'danger')
             return render_template('rate_participant.html', participant=participant)
 
     return render_template('rate_participant.html', participant=participant)
+
+@app.route('/edit_evaluation/<int:evaluation_id>', methods=['GET', 'POST'])
+@login_required
+def edit_evaluation(evaluation_id):
+    if current_user.role != 'evaluator':
+        flash('Access denied', 'danger')
+        return redirect(url_for('leaderboard'))
+        
+    # Get the evaluation
+    evaluation = Evaluation.query.get_or_404(evaluation_id)
+    
+    # Check if the evaluation belongs to the current user
+    if evaluation.evaluator_id != current_user.id:
+        flash('You can only edit your own evaluations', 'danger')
+        return redirect(url_for('select_participant'))
+        
+    participant = Participant.query.get_or_404(evaluation.participant_id)
+    
+    if request.method == 'POST':
+        try:
+            # Validate that input values are between 1 and 100
+            project_design = float(request.form['project_design'])
+            functionality = float(request.form['functionality'])
+            presentation = float(request.form['presentation'])
+            web_design = float(request.form['web_design'])
+            impact = float(request.form['impact'])
+            
+            # Ensure all scores are between 1 and 100
+            if not all(1 <= score <= 100 for score in [project_design, functionality, presentation, web_design, impact]):
+                flash('All scores must be between 1 and 100', 'danger')
+                return render_template('edit_evaluation.html', evaluation=evaluation, participant=participant)
+            
+            # Update the evaluation
+            evaluation.project_design = project_design
+            evaluation.functionality = functionality
+            evaluation.presentation = presentation
+            evaluation.web_design = web_design
+            evaluation.impact = impact
+            evaluation.comments = request.form.get('comments', '')
+            
+            db.session.commit()
+            flash('Evaluation updated successfully', 'success')
+            return redirect(url_for('select_participant'))
+            
+        except (ValueError, KeyError):
+            flash('Invalid evaluation data submitted', 'danger')
+            return render_template('edit_evaluation.html', evaluation=evaluation, participant=participant)
+    
+    return render_template('edit_evaluation.html', evaluation=evaluation, participant=participant)
 
 
 # Speed test routes removed
