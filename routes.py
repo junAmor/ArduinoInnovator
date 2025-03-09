@@ -257,6 +257,22 @@ def reset_participants():
     flash('All participants and evaluations have been reset', 'success')
     return redirect(url_for('participants'))
 
+@app.route('/evaluations/reset', methods=['POST'])
+@login_required
+def reset_evaluations():
+    if current_user.role != 'evaluator':
+        flash('Access denied', 'danger')
+        return redirect(url_for('leaderboard'))
+    
+    # Delete only the evaluations from the current evaluator
+    Evaluation.query.filter_by(evaluator_id=current_user.id).delete()
+    
+    # Commit the changes
+    db.session.commit()
+    
+    flash('All your evaluations have been reset. You can start evaluating again.', 'success')
+    return redirect(url_for('select_participant'))
+
 @app.route('/select_participant')
 @login_required
 def select_participant():
