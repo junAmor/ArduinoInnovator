@@ -89,8 +89,7 @@ def add_evaluator():
     new_evaluator = User(
         username=username,
         password_hash=generate_password_hash(password),
-        role='evaluator'
-    )
+        role='evaluator')
     db.session.add(new_evaluator)
     db.session.commit()
 
