@@ -32,6 +32,8 @@ class Evaluation(db.Model):
 
     @property
     def total_score(self):
+        # Weighted score calculation as explained in the requirements
+        # Project Design (25%) + Functionality (30%) + Presentation (15%) + Web Design (10%) + Impact (20%)
         return (
             self.project_design * 0.25 +
             self.functionality * 0.30 +

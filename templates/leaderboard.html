@@ -2,9 +2,22 @@
 
 {% block content %}
 <h2 class="mb-4">Leaderboard</h2>
+
+{% if not all_evaluations_complete %}
+<div class="alert alert-info">
+    <h5>Evaluation Progress</h5>
+    <p>Waiting for all evaluations to be completed. Scores will be visible once all evaluations are done.</p>
+    <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width: {{ (completed_evaluations / total_evaluations) * 100 }}%;" 
+             aria-valuenow="{{ completed_evaluations }}" aria-valuemin="0" aria-valuemax="{{ total_evaluations }}">
+            {{ completed_evaluations }} / {{ total_evaluations }}
+        </div>
+    </div>
+</div>
+{% else %}
 <div class="card mb-4">
-    <div class="card-header bg-info text-white">
-        <h5 class="mb-0">Criteria Weights</h5>
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">All Evaluations Complete - Final Results</h5>
     </div>
     <div class="card-body">
         <div class="row">
@@ -16,37 +29,43 @@
         </div>
     </div>
 </div>
+{% endif %}
+
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>Rank</th>
+                        {% if all_evaluations_complete %}<th>Rank</th>{% endif %}
                         <th>Group</th>
                         <th>Participant</th>
                         <th>Project Title</th>
+                        {% if all_evaluations_complete %}
                         <th>Project Design (25%)</th>
                         <th>Functionality (30%)</th>
                         <th>Presentation (15%)</th>
                         <th>Web Design (10%)</th>
                         <th>Impact (20%)</th>
-                        <th>Total Score</th>
+                        <th>Final Score</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
                     {% for participant in participants %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
+                    <tr {% if all_evaluations_complete and loop.index == 1 %}class="table-success"{% endif %}>
+                        {% if all_evaluations_complete %}<td class="fw-bold">{{ loop.index }}</td>{% endif %}
                         <td>{{ participant.group_number }}</td>
                         <td>{{ participant.name }}</td>
                         <td>{{ participant.project_title }}</td>
+                        {% if all_evaluations_complete %}
                         <td>{{ "%.2f"|format(participant.avg_project_design) }}</td>
                         <td>{{ "%.2f"|format(participant.avg_functionality) }}</td>
                         <td>{{ "%.2f"|format(participant.avg_presentation) }}</td>
                         <td>{{ "%.2f"|format(participant.avg_web_design) }}</td>
                         <td>{{ "%.2f"|format(participant.avg_impact) }}</td>
                         <td class="fw-bold">{{ "%.2f"|format(participant.score) }}</td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
