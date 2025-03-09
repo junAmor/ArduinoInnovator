@@ -9,7 +9,7 @@
     <div class="col">
         <div class="card h-100 {% if participant.id in evaluated_participant_ids %}border-success{% endif %}">
             <div class="card-body">
-                <h5 class="card-title">Group {{ loop.index }}: {{ participant.name }}</h5>
+                <h5 class="card-title">Group {{ participant.group_number }}: {{ participant.name }}</h5>
                 <p class="card-text">{{ participant.project_title }}</p>
                 {% if participant.id in evaluated_participant_ids %}
                     <button class="btn btn-success" disabled>

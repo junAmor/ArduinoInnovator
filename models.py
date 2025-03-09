@@ -13,6 +13,7 @@ class User(UserMixin, db.Model):
 
 class Participant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    group_number = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String(100), nullable=False)
     project_title = db.Column(db.String(200), nullable=False)
     score = db.Column(db.Float, default=0.0)

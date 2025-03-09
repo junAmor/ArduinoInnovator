@@ -34,7 +34,7 @@
                 <tbody>
                     {% for participant in participants %}
                     <tr>
-                        <td>{{ loop.index }}</td>
+                        <td>{{ participant.group_number }}</td>
                         <td>{{ participant.name }}</td>
                         <td>{{ participant.project_title }}</td>
                         <td>{{ "%.2f"|format(participant.score) }}</td>
@@ -92,6 +92,10 @@
             </div>
             <form action="{{ url_for('add_participant') }}" method="POST">
                 <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="group_number" class="form-label">Group Number</label>
+                        <input type="number" class="form-control" id="group_number" name="group_number" min="1" required>
+                    </div>
                     <div class="mb-3">
                         <label for="name" class="form-label">Group Name</label>
                         <input type="text" class="form-control" id="name" name="name" required>

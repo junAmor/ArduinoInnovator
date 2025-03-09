@@ -134,14 +134,27 @@ def add_participant():
         flash('Access denied', 'danger')
         return redirect(url_for('participants'))
 
+    group_number = request.form.get('group_number')
     name = request.form.get('name')
     project_title = request.form.get('project_title')
 
-    if not name or not project_title:
-        flash('Please provide both group name and project title', 'danger')
+    if not group_number or not name or not project_title:
+        flash('Please provide group number, group name, and project title', 'danger')
+        return redirect(url_for('participants'))
+        
+    try:
+        group_number = int(group_number)
+    except ValueError:
+        flash('Group number must be a valid integer', 'danger')
+        return redirect(url_for('participants'))
+
+    # Check if group number already exists
+    if Participant.query.filter_by(group_number=group_number).first():
+        flash('A group with this number already exists', 'danger')
         return redirect(url_for('participants'))
 
     new_participant = Participant(
+        group_number=group_number,
         name=name,
         project_title=project_title
     )
