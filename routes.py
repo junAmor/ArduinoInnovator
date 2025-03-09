@@ -336,14 +336,26 @@ def rate_participant(participant_id):
 
     if request.method == 'POST':
         try:
+            # Validate that input values are between 1 and 100
+            project_design = float(request.form['project_design'])
+            functionality = float(request.form['functionality'])
+            presentation = float(request.form['presentation'])
+            web_design = float(request.form['web_design'])
+            impact = float(request.form['impact'])
+            
+            # Ensure all scores are between 1 and 100
+            if not all(1 <= score <= 100 for score in [project_design, functionality, presentation, web_design, impact]):
+                flash('All scores must be between 1 and 100', 'danger')
+                return render_template('rate_participant.html', participant=participant)
+            
             evaluation = Evaluation(
                 participant_id=participant_id,
                 evaluator_id=current_user.id,
-                project_design=float(request.form['project_design']),
-                functionality=float(request.form['functionality']),
-                presentation=float(request.form['presentation']),
-                web_design=float(request.form['web_design']),
-                impact=float(request.form['impact']),
+                project_design=project_design,
+                functionality=functionality,
+                presentation=presentation,
+                web_design=web_design,
+                impact=impact,
                 comments=request.form.get('comments', '')
             )
 
