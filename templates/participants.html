@@ -22,7 +22,6 @@
                         <th>Group No.</th>
                         <th>Group Name</th>
                         <th>Project Title</th>
-                        <th>Current Score</th>
                         {% if current_user.role == 'evaluator' %}
                         <th>Actions</th>
                         {% endif %}
@@ -37,7 +36,6 @@
                         <td>{{ participant.group_number }}</td>
                         <td>{{ participant.name }}</td>
                         <td>{{ participant.project_title }}</td>
-                        <td>{{ "%.2f"|format(participant.score) }}</td>
                         {% if current_user.role == 'evaluator' %}
                         <td>
                             <a href="{{ url_for('evaluate_participant', participant_id=participant.id) }}" class="btn btn-sm btn-primary">Evaluate</a>
