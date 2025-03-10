@@ -67,45 +67,35 @@ def leaderboard():
     if all_evaluations_complete:
         for participant in participants:
             evaluations = Evaluation.query.filter_by(participant_id=participant.id).all()
-            
-            if evaluations:
-                # Calculate average scores for each criterion
-                participant.avg_project_design = sum(e.project_design for e in evaluations) / len(evaluations)
-                participant.avg_functionality = sum(e.functionality for e in evaluations) / len(evaluations)
-                participant.avg_presentation = sum(e.presentation for e in evaluations) / len(evaluations)
-                participant.avg_web_design = sum(e.web_design for e in evaluations) / len(evaluations)
-                participant.avg_impact = sum(e.impact for e in evaluations) / len(evaluations)
-                
-                # Calculate weighted final score using the provided formula
-                # For the new 0-100 scale
-                weighted_scores = []
-                for evaluation in evaluations:
-                    weighted_score = (
-                        (evaluation.project_design * 0.25) +
-                        (evaluation.functionality * 0.30) +
-                        (evaluation.presentation * 0.15) +
-                        (evaluation.web_design * 0.10) +
-                        (evaluation.impact * 0.20)
-                    )
-                    weighted_scores.append(weighted_score)
-                
-                # Final score is the average of all evaluator weighted scores
-                participant.score = sum(weighted_scores) / len(weighted_scores)
-            else:
-                participant.avg_project_design = 0
-                participant.avg_functionality = 0
-                participant.avg_presentation = 0
-                participant.avg_web_design = 0
-                participant.avg_impact = 0
-                participant.score = 0
         
-        # Sort participants by score after calculation
-        participants = sorted(participants, key=lambda p: p.score, reverse=True)
+        if evaluations:
+            total_score = 0  # Store the sum of all evaluator scores
+            num_evaluations = len(evaluations)
+            
+            for evaluation in evaluations:
+                # Compute weighted score for each evaluation
+                weighted_score = (
+                    (evaluation.project_design * 0.25) +
+                    (evaluation.functionality * 0.30) +
+                    (evaluation.presentation * 0.15) +
+                    (evaluation.web_design * 0.10) +
+                    (evaluation.impact * 0.20)
+                )
+                total_score += weighted_score  # Accumulate scores for all evaluators
+            
+            # Compute final average score
+            participant.score = total_score / num_evaluations
+        else:
+            participant.score = 0  # Default score if no evaluations exist
     
+            # Sort participants by score after calculation
+            participants = sorted(participants, key=lambda p: p.score, reverse=True)
+
     return render_template('leaderboard.html', participants=participants, 
-                          all_evaluations_complete=all_evaluations_complete,
-                          completed_evaluations=total_actual,
-                          total_evaluations=total_expected)
+                      all_evaluations_complete=all_evaluations_complete,
+                      completed_evaluations=total_actual,
+                      total_evaluations=total_expected)
+
 
 @app.route('/evaluators')
 @login_required
