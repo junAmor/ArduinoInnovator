@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Innovator Challenge</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --teal-dark: #01726F;
+            --teal-medium: #268884;
+            --orange: #eb751e;
+            --yellow: #e0bd2f;
+            --light-teal: #ccdede;
+        }
+
+        body {
+            background-color: var(--light-teal);
+            color: #333;
+        }
+
+        .navbar {
+            background-color: var(--teal-dark) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--teal-medium);
+            border-color: var(--teal-medium);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--teal-dark);
+            border-color: var(--teal-dark);
+        }
+
+        .btn-warning {
+            background-color: var(--orange);
+            border-color: var(--orange);
+            color: white;
+        }
+
+        .btn-success {
+            background-color: var(--yellow);
+            border-color: var(--yellow);
+            color: #333;
+        }
+
+        .card-header {
+            background-color: var(--teal-medium);
+            color: white;
+        }
+
+        .accordion h5 {
+            color: black;
+        }
+        .card-header h5{
+            color: black;
+        }
+
+        .table th {
+            background-color: var(--teal-medium);
+            color: white;
+        }
+        /* Added styles for better readability, these are placeholders and should be refined based on actual design */
+        .table td {
+            color: black; /*Ensure text is visible */
+        }
+        .table th.final-score {
+            background-color: #FFFF00; /* Highlight Final Score */
+            padding-left: 1rem; /* Add left padding */
+            padding-right: 1rem; /* Add right padding */
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('leaderboard') }}">Arduino Innovator Challenge</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.role == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('leaderboard') }}">Leaderboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('participants') }}">Participants</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('evaluators') }}">Evaluators</a>
+                            </li>
+                        {% elif current_user.role == 'evaluator' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('select_participant') }}">Evaluate</a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block auth %}{% endblock %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

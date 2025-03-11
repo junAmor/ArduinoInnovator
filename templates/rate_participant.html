@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card mb-4 shadow-sm">
+  <div class="card-header bg-primary text-white">
+    <h2 class="mb-0">Evaluate Group {{ participant.group_number }}</h2>
+  </div>
+  <div class="card-body">
+    <h3 class="text-primary">{{ participant.name }}</h3>
+    <p class="lead mb-0"><strong>Project:</strong> {{ participant.project_title }}</p>
+  </div>
+</div>
+
+<div class="alert alert-primary mb-4">
+  <div class="d-flex align-items-center">
+    <i class="bi bi-lightbulb-fill me-2"></i>
+    <span>Please evaluate each criterion on a scale of <strong>1 to 100</strong>.</span>
+  </div>
+</div>
+
+<form method="POST" action="{{ url_for('rate_participant', participant_id=participant.id) }}">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card mb-3 shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Project Design (25%)</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <div class="form-text mb-2">Please input the score from 1 to 100:</div>
+            <input type="number" id="project_design" name="project_design" class="form-control text-dark" min="1" max="100" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3 shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Functionality (30%)</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <div class="form-text mb-2">Please input the score from 1 to 100:</div>
+            <input type="number" id="functionality" name="functionality" class="form-control text-dark" min="1" max="100" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3 shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Presentation (15%)</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <div class="form-text mb-2">Please input the score from 1 to 100:</div>
+            <input type="number" id="presentation" name="presentation" class="form-control text-dark" min="1" max="100" required>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card mb-3 shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Web Design (10%)</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <div class="form-text mb-2">Please input the score from 1 to 100:</div>
+            <input type="number" id="web_design" name="web_design" class="form-control text-dark" min="1" max="100" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3 shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Impact (20%)</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-group">
+            <div class="form-text mb-2">Please input the score from 1 to 100:</div>
+            <input type="number" id="impact" name="impact" class="form-control text-dark" min="1" max="100" required>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header bg-light">
+      <h5 class="mb-0 text-primary">
+        <i class="bi bi-chat-square-text me-1"></i> Comments (Optional)
+      </h5>
+    </div>
+    <div class="card-body">
+      <div class="form-group mb-4 p-3 border rounded shadow-sm bg-light">
+            <label for="comments" class="fw-bold text-primary">
+              <i class="bi bi-chat-square-text me-1"></i> Comments (Optional)
+            </label>
+            <textarea id="comments" name="comments" class="form-control mt-2 text-dark" rows="4" 
+              placeholder="Enter additional feedback and observations about this project..."></textarea>
+          </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center gap-3 mt-5">
+    <a href="{{ url_for('select_participant') }}" class="btn btn-outline-secondary btn-lg">
+      <i class="bi bi-arrow-left me-1"></i> Back
+    </a>
+    <button type="submit" class="btn btn-primary btn-lg px-5">
+      <i class="bi bi-check-circle me-1"></i> Submit Evaluation
+    </button>
+  </div>
+</form>
+{% endblock %}
