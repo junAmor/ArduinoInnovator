@@ -1,26 +1,66 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block auth %}
-<div class="container">
-    <div class="row justify-content-center align-items-center min-vh-100">
-        <div class="col-md-6 col-lg-4">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="text-center mb-4">2nd Arduino Innovator Challenge</h2>
-                    <form method="POST">
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
-                    </form>
-                </div>
+{% block title %}Login - Evaluation System{% endblock %}
+
+{% block head %}
+<style>
+    /* Custom header layout for login page */
+    .header-content {
+        justify-content: center !important;
+    }
+
+    .logo-title {
+        margin: 0 !important;
+        justify-content: center !important;
+    }
+
+    .uep-logo-container {
+        position: absolute !important;
+        right: 20px !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-form">
+    <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+    <form method="POST" action="{{ url_for('login') }}">
+        <div class="form-group">
+            <label for="username"><i class="fas fa-user"></i> Username</label>
+            <input type="text" id="username" name="username" required autofocus>
+        </div>
+        <div class="form-group password-field">
+            <label for="password"><i class="fas fa-lock"></i> Password</label>
+            <div class="password-input-container">
+                <input type="password" id="password" name="password" required>
+                <span class="password-toggle"><i class="fas fa-eye"></i></span>
             </div>
         </div>
-    </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+    </form>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordField = document.getElementById('password');
+        const passwordToggle = document.querySelector('.password-toggle');
+
+        passwordToggle.addEventListener('click', function() {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+
+            // Toggle icon
+            const icon = this.querySelector('i');
+            if (type === 'password') {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        });
+    });
+</script>
 {% endblock %}

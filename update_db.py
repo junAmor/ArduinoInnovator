@@ -27,3 +27,38 @@ def update_participant_table():
 
 if __name__ == '__main__':
     update_participant_table()
+import os
+from sqlalchemy import create_engine, text
+from dotenv import load_dotenv
+
+# Load environment variables from .env file if it exists
+load_dotenv()
+
+def setup_database():
+    """Set up the database with the required tables if they don't exist."""
+    database_url = os.environ.get("DATABASE_URL")
+    
+    if not database_url:
+        print("No DATABASE_URL environment variable found. Using SQLite.")
+        database_url = "sqlite:///project.db"
+    else:
+        # Format the URL for SQLAlchemy if using Postgres
+        if database_url.startswith("postgres://"):
+            database_url = database_url.replace("postgres://", "postgresql://", 1)
+    
+    try:
+        # Create engine and connect
+        engine = create_engine(database_url)
+        with engine.connect() as conn:
+            # Test connection
+            result = conn.execute(text("SELECT 1"))
+            print("Database connection successful!")
+            
+        print(f"Successfully connected to the database at {database_url}")
+        return True
+    except Exception as e:
+        print(f"Error connecting to the database: {e}")
+        return False
+
+if __name__ == "__main__":
+    setup_database()
