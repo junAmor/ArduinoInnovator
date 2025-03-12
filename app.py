@@ -35,17 +35,18 @@ with app.app_context():
     from models import User
     from werkzeug.security import generate_password_hash
 
-# Check if the admin user exists, if not, create one
 if not User.query.filter_by(username='admin').first():
-    admin = User(
-        username='admin',
-        password_hash=generate_password_hash('admin123'),
-        role='admin'
-    )
-    db.session.add(admin)
-    db.session.commit()
+        admin = User(
+            username='admin',
+            password_hash=generate_password_hash('admin123'),
+            role='admin'
+        )
+        db.session.add(admin)
 
-# Admin can add evaluators through the application UI
+    evaluators = [
+        {'username': 'Jerome', 'password': 'jerome123'},
+        {'username': 'Glen', 'password': 'glen123'}
+    ]
 
 
     for evaluator in evaluators:
